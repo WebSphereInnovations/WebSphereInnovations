@@ -78,8 +78,13 @@ class WhatsAppService:
                 print(f"🌐 Please manually open: {whatsapp_link}")
                 log_entry['auto_opened'] = False
             
-            # Show immediate desktop notification
-            show_whatsapp_notification(phone_number, message, whatsapp_link)
+            # Show immediate desktop notification (with fallback)
+            try:
+                show_whatsapp_notification(phone_number, message, whatsapp_link)
+                log_entry['notification_sent'] = True
+            except Exception as notif_error:
+                log_entry['notification_sent'] = False
+                print(f"⚠️ Notification error: {notif_error}")
             
             # Update log with auto-open status
             with open('logs/whatsapp_messages.log', 'a') as f:

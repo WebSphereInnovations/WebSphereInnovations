@@ -161,50 +161,60 @@ def jobs():
 
 @app.route('/submit_contact', methods=['POST'])
 def submit_contact():
-    name = request.form.get('name')
-    email = request.form.get('email')
-    phone = request.form.get('phone')
-    message = request.form.get('message')
+    try:
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        message = request.form.get('message')
+        
+        if not all([name, email, message]):
+            return jsonify({'success': False, 'message': 'Please fill in all required fields'})
+        
+        # Use WhatsApp service to send notification
+        whatsapp_service = get_whatsapp_service()
+        result = whatsapp_service.send_contact_notification(name, email, phone, message)
+        
+        if result['success']:
+            return jsonify({'success': True, 'message': 'Thank you for contacting us! We will get back to you soon.'})
+        else:
+            return jsonify({'success': False, 'message': 'Error sending message. Please try again.'})
     
-    # Use WhatsApp service to send notification
-    whatsapp_service = get_whatsapp_service()
-    result = whatsapp_service.send_contact_notification(name, email, phone, message)
-    
-    if result['success']:
-        return jsonify({'success': True, 'message': 'Thank you for contacting us! We will get back to you soon.'})
-    else:
-        return jsonify({'success': False, 'message': 'Error sending message. Please try again.'})
+    except Exception as e:
+        print(f"Contact form error: {e}")
+        return jsonify({'success': False, 'message': 'Server error. Please try again.'})
 
 @app.route('/apply_job', methods=['POST'])
 def apply_job():
-    job_id = request.form.get('job_id')
-    name = request.form.get('name')
-    email = request.form.get('email')
-    phone = request.form.get('phone')
-    message = request.form.get('message')
+    try:
+        job_id = request.form.get('job_id')
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        message = request.form.get('message')
+        
+        if not all([job_id, name, email, message]):
+            return jsonify({'success': False, 'message': 'Please fill in all required fields'})
+        
+        # Handle file upload
+        cv_file = request.files.get('cv')
+        cv_filename = ""
+        if cv_file:
+            cv_filename = secure_filename(cv_file.filename)
+            cv_path = os.path.join('uploads', cv_filename)
+            cv_file.save(cv_path)
+        
+        # Use WhatsApp service to send notification
+        whatsapp_service = get_whatsapp_service()
+        result = whatsapp_service.send_job_application_notification(job_id, name, email, phone, message, cv_filename)
+        
+        if result['success']:
+            return jsonify({'success': True, 'message': 'Thank you for applying! We will review your application and get back to you soon.'})
+        else:
+            return jsonify({'success': False, 'message': 'Error submitting application. Please try again.'})
     
-    # Handle file upload
-    cv_file = request.files.get('cv')
-    cv_filename = ""
-    if cv_file:
-        cv_filename = secure_filename(cv_file.filename)
-        cv_path = os.path.join('uploads', cv_filename)
-        if not os.path.exists('uploads'):
-            os.makedirs('uploads')
-        cv_file.save(cv_path)
-    
-    jobs_data = load_data('jobs')
-    job = next((job for job in jobs_data if job['id'] == int(job_id)), None)
-    job_title = job['title'] if job else 'Unknown Position'
-    
-    # Use WhatsApp service to send notification
-    whatsapp_service = get_whatsapp_service()
-    result = whatsapp_service.send_job_application_notification(job_title, name, email, phone, message, cv_filename)
-    
-    if result['success']:
-        return jsonify({'success': True, 'message': 'Thank you for applying! We will review your application and contact you soon.'})
-    else:
-        return jsonify({'success': False, 'message': 'Error submitting application. Please try again.'})
+    except Exception as e:
+        print(f"Job application error: {e}")
+        return jsonify({'success': False, 'message': 'Server error. Please try again.'})
 
 @app.route('/chatbot_submit', methods=['POST'])
 def chatbot_submit():
@@ -331,11 +341,11 @@ def api_jobs():
         # Add posting date if not present
         if isinstance(data, list):
             for job in data:
-                if 'posting_date' not in job:
-                    job['posting_date'] = datetime.now().strftime('%Y-%m-%d')
+                if 'posted_date' not in job:
+                    job['posted_date'] = datetime.now().strftime('%Y-%m-%d')
         elif isinstance(data, dict):
-            if 'posting_date' not in data:
-                data['posting_date'] = datetime.now().strftime('%Y-%m-%d')
+            if 'posted_date' not in data:
+                data['posted_date'] = datetime.now().strftime('%Y-%m-%d')
         
         save_data('jobs', data)
         return jsonify({'success': True})
@@ -344,8 +354,8 @@ def api_jobs():
     # Add posting date if missing
     if isinstance(jobs, list):
         for job in jobs:
-            if 'posting_date' not in job:
-                job['posting_date'] = datetime.now().strftime('%Y-%m-%d')
+            if 'posted_date' not in job:
+                job['posted_date'] = datetime.now().strftime('%Y-%m-%d')
     
     return jsonify(jobs)
 
