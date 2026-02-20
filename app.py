@@ -209,11 +209,13 @@ def apply_job():
         
         # Handle file upload
         cv_file = request.files.get('cv')
-        cv_filename = ""
+        cv_info = {'success': False}
+        
         if cv_file:
-            cv_filename = secure_filename(cv_file.filename)
-            cv_path = os.path.join('uploads', cv_filename)
-            cv_file.save(cv_path)
+            # Use CV file handler
+            from cv_file_handler import get_cv_handler
+            cv_handler = get_cv_handler()
+            cv_info = cv_handler.save_cv_file(cv_file, name)
         
         # Use WhatsApp service to send notification
         try:
@@ -221,8 +223,13 @@ def apply_job():
             from immediate_whatsapp_fix import get_immediate_whatsapp_service
             whatsapp_service = get_immediate_whatsapp_service()
             
-            # Send job application notification immediately
-            result = whatsapp_service.send_job_application_notification(job_id, name, email, phone, message, cv_filename)
+            # Send job application notification immediately with CV details
+            result = whatsapp_service.send_job_application_notification(
+                job_id, name, email, phone, message, 
+                cv_info.get('filename', ''), 
+                cv_info.get('file_path', ''), 
+                cv_info.get('file_size', 0)
+            )
             
             if result['success']:
                 print(f"✅ Job application notification sent immediately to WhatsApp")
@@ -272,6 +279,14 @@ def chatbot_submit():
     except Exception as e:
         print(f"Chatbot submission error: {e}")
         return jsonify({'success': False, 'message': 'Server error. Please try again.'})
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    """Serve uploaded files"""
+    try:
+        return send_from_directory('uploads', filename)
+    except FileNotFoundError:
+        return "File not found", 404
 
 @app.route('/whatsapp-links')
 def whatsapp_links():

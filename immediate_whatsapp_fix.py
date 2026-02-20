@@ -198,9 +198,9 @@ class ImmediateWhatsAppFix:
             'recipients': [self.primary_number, self.secondary_number]
         }
     
-    def send_job_application_notification(self, job_title, name, email, phone, message, cv_filename):
+    def send_job_application_notification(self, job_title, name, email, phone, message, cv_filename="", cv_path="", cv_size=0):
         """
-        Send job application notification immediately
+        Send job application notification immediately with CV file
         """
         whatsapp_message = f"""💼 New Job Application
 
@@ -210,6 +210,7 @@ class ImmediateWhatsAppFix:
 📱 Phone: {phone or 'Not provided'}
 💬 Message: {message}
 📎 CV: {cv_filename or 'Not provided'}
+📊 CV Size: {cv_size} bytes
 
 🕐 Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 🌐 From: WebSphere Innovations Website
@@ -226,6 +227,9 @@ class ImmediateWhatsAppFix:
             'success': any(r['success'] for r in results),
             'results': results,
             'message': whatsapp_message,
+            'cv_filename': cv_filename,
+            'cv_path': cv_path,
+            'cv_size': cv_size,
             'recipients': [self.primary_number, self.secondary_number]
         }
     
