@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - WebSphere Innovations</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #0056b3;
+            --accent-color: #28a745;
+            --dark-bg: #1a1a1a;
+            --darker-bg: #0d0d0d;
+            --light-text: #ffffff;
+            --gray-text: #cccccc;
+            --border-color: #333333;
+            --gradient-primary: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            --gradient-accent: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+        }
+        
+        .sidebar {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border-right: 1px solid var(--border-color);
+            min-height: 100vh;
+            position: fixed;
+            width: 250px;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .sidebar-header h4 {
+            color: var(--primary-color);
+            margin-bottom: 0;
+        }
+        
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-link {
+            color: var(--gray-text);
+            padding: 0.8rem 1.5rem;
+            transition: all 0.3s ease;
+            border-radius: 0;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .nav-link i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+        
+        .content-header {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content-header h2 {
+            color: var(--primary-color);
+            margin-bottom: 0;
+        }
+        
+        .content-section {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .form-control, .form-select {
+            background-color: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            color: var(--light-text);
+            border-radius: 10px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: var(--darker-bg);
+            border-color: var(--primary-color);
+            color: var(--light-text);
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        .form-label {
+            color: var(--gray-text);
+            font-weight: bold;
+        }
+        
+        .btn-admin {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 123, 255, 0.3);
+            color: white;
+        }
+        
+        .btn-success-admin {
+            background: var(--gradient-accent);
+        }
+        
+        .btn-success-admin:hover {
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-danger-admin {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+        
+        .btn-danger-admin:hover {
+            box-shadow: 0 10px 20px rgba(220, 53, 69, 0.3);
+        }
+        
+        .job-item {
+            background: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-custom {
+            border-radius: 10px;
+            border: none;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success-custom {
+            background: var(--gradient-accent);
+            color: white;
+        }
+        
+        .alert-error-custom {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-shield-alt" style="font-size: 2rem; color: var(--primary-color);"></i>
+            <h4>Admin Panel</h4>
+        </div>
+        <nav class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#dashboard" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#company" data-section="company">
+                        <i class="fas fa-building"></i>Company Info
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#services" data-section="services">
+                        <i class="fas fa-cogs"></i>Services
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#team" data-section="team">
+                        <i class="fas fa-users"></i>Team Management
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#jobs" data-section="jobs">
+                        <i class="fas fa-briefcase"></i>Jobs Management
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#recipients" data-section="recipients">
+                        <i class="fas fa-whatsapp"></i>WhatsApp Recipients
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin_logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-header">
+            <div>
+                <h2>Admin Dashboard</h2>
+                <p class="mb-0">Manage your website content</p>
+            </div>
+            <a href="{{ url_for('home') }}" class="btn btn-admin">
+                <i class="fas fa-eye me-2"></i>View Website
+            </a>
+        </div>
+        
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="content-section">
+            <h3 class="section-title">Dashboard Overview</h3>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center p-3" style="background: var(--darker-bg); border-radius: 10px;">
+                        <i class="fas fa-briefcase" style="font-size: 2rem; color: var(--primary-color);"></i>
+                        <h4 class="mt-2">Jobs</h4>
+                        <p id="jobs-count">Loading...</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3" style="background: var(--darker-bg); border-radius: 10px;">
+                        <i class="fas fa-cogs" style="font-size: 2rem; color: var(--accent-color);"></i>
+                        <h4 class="mt-2">Services</h4>
+                        <p>4 Active</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3" style="background: var(--darker-bg); border-radius: 10px;">
+                        <i class="fas fa-users" style="font-size: 2rem; color: var(--secondary-color);"></i>
+                        <h4 class="mt-2">Team</h4>
+                        <p>Growing</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3" style="background: var(--darker-bg); border-radius: 10px;">
+                        <i class="fas fa-chart-line" style="font-size: 2rem; color: #ffc107;"></i>
+                        <h4 class="mt-2">Analytics</h4>
+                        <p>Coming Soon</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Company Info Section -->
+        <div id="company-section" class="content-section" style="display: none;">
+            <h3 class="section-title">Company Information</h3>
+            <form id="companyForm">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="company_name" class="form-label">Company Name</label>
+                            <input type="text" class="form-control" id="company_name" name="name">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="company_tagline" class="form-label">Tagline</label>
+                            <input type="text" class="form-control" id="company_tagline" name="tagline">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="company_description" class="form-label">Description</label>
+                    <textarea class="form-control" id="company_description" name="description" rows="3"></textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="company_phone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="company_phone" name="phone">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="company_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="company_email" name="email">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="company_whatsapp" class="form-label">Primary WhatsApp</label>
+                            <input type="text" class="form-control" id="company_whatsapp" name="whatsapp">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="company_copyright_year" class="form-label">Copyright Year</label>
+                            <input type="text" class="form-control" id="company_copyright_year" name="copyright_year">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="company_additional_phones" class="form-label">Additional Phone Numbers</label>
+                    <textarea class="form-control" id="company_additional_phones" name="additional_phones" rows="2" placeholder="+91 9876543210, +91 9876543211"></textarea>
+                    <small class="text-muted">Enter multiple phone numbers separated by commas</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="company_additional_whatsapp" class="form-label">Additional WhatsApp Numbers</label>
+                    <textarea class="form-control" id="company_additional_whatsapp" name="additional_whatsapp" rows="2" placeholder="+91 9876543210, +91 9876543211"></textarea>
+                    <small class="text-muted">Enter multiple WhatsApp numbers separated by commas</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="company_additional_emails" class="form-label">Additional Emails</label>
+                    <textarea class="form-control" id="company_additional_emails" name="additional_emails" rows="2" placeholder="email1@example.com, email2@example.com"></textarea>
+                    <small class="text-muted">Enter multiple email addresses separated by commas</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="company_address" class="form-label">Address</label>
+                    <textarea class="form-control" id="company_address" name="address" rows="2"></textarea>
+                </div>
+                
+                <button type="button" class="btn btn-admin admin-save-btn" data-section="company">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </form>
+        </div>
+        
+        <!-- Services Section -->
+        <div id="services-section" class="content-section" style="display: none;">
+            <h3 class="section-title">Services Management</h3>
+            <form id="servicesForm">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Cybersecurity</h5>
+                        <div class="mb-3">
+                            <label for="service_cybersecurity_title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="service_cybersecurity_title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="service_cybersecurity_description" class="form-label">Description</label>
+                            <textarea class="form-control" id="service_cybersecurity_description" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Software Development</h5>
+                        <div class="mb-3">
+                            <label for="service_software_development_title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="service_software_development_title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="service_software_development_description" class="form-label">Description</label>
+                            <textarea class="form-control" id="service_software_development_description" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Data Analytics</h5>
+                        <div class="mb-3">
+                            <label for="service_data_analytics_title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="service_data_analytics_title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="service_data_analytics_description" class="form-label">Description</label>
+                            <textarea class="form-control" id="service_data_analytics_description" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Cloud Solutions</h5>
+                        <div class="mb-3">
+                            <label for="service_cloud_solutions_title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="service_cloud_solutions_title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="service_cloud_solutions_description" class="form-label">Description</label>
+                            <textarea class="form-control" id="service_cloud_solutions_description" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn btn-admin admin-save-btn" data-section="services">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </form>
+        </div>
+        
+        <!-- Team Management Section -->
+        <div id="team-section" class="content-section" style="display: none;">
+            <h3 class="section-title">Team Management</h3>
+            
+            <!-- CEO Section -->
+            <div class="mb-4">
+                <h5 class="mb-3">CEO Information</h5>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="ceo_name" class="form-label">CEO Name</label>
+                                    <input type="text" class="form-control" id="ceo_name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ceo_title" class="form-label">CEO Title</label>
+                                    <input type="text" class="form-control" id="ceo_title" value="Chief Executive Officer">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="ceo_photo" class="form-label">CEO Photo URL</label>
+                                    <input type="text" class="form-control" id="ceo_photo" placeholder="https://example.com/ceo-photo.jpg">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ceo_message" class="form-label">CEO Message</label>
+                                    <textarea class="form-control" id="ceo_message" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="ceo_enabled">
+                            <label class="form-check-label" for="ceo_enabled">
+                                Show CEO on Website
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Managing Director Section -->
+            <div class="mb-4">
+                <h5 class="mb-3">Managing Director Information</h5>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="md_name" class="form-label">Managing Director Name</label>
+                                    <input type="text" class="form-control" id="md_name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="md_title" class="form-label">MD Title</label>
+                                    <input type="text" class="form-control" id="md_title" value="Managing Director">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="md_photo" class="form-label">MD Photo URL</label>
+                                    <input type="text" class="form-control" id="md_photo" placeholder="https://example.com/md-photo.jpg">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="md_message" class="form-label">MD Message</label>
+                                    <textarea class="form-control" id="md_message" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="md_enabled">
+                            <label class="form-check-label" for="md_enabled">
+                                Show Managing Director on Website
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Team Members Section -->
+            <div class="mb-4">
+                <h5 class="mb-3">Team Members</h5>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6>Current Team Members</h6>
+                            <button type="button" class="btn btn-sm btn-admin" onclick="addTeamMember()">
+                                <i class="fas fa-plus me-1"></i>Add Member
+                            </button>
+                        </div>
+                        <div id="team-members-list">
+                            <!-- Team members will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" class="btn btn-admin admin-save-btn" data-section="team">
+                <i class="fas fa-save me-2"></i>Save Team Changes
+            </button>
+        </div>
+        
+        <!-- Jobs Section -->
+        <div id="jobs-section" class="content-section" style="display: none;">
+            <h3 class="section-title">Jobs Management</h3>
+            
+            <div class="mb-4">
+                <h5>Add New Job</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="new_job_title" class="form-label">Job Title</label>
+                            <input type="text" class="form-control" id="new_job_title">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="new_job_experience" class="form-label">Experience</label>
+                            <input type="text" class="form-control" id="new_job_experience" placeholder="e.g., 3+ years">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="mb-3">
+                            <label for="new_job_description" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="new_job_description">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success-admin" id="addJobBtn">
+                    <i class="fas fa-plus me-2"></i>Add Job
+                </button>
+            </div>
+            
+            <h5>Current Jobs</h5>
+            <div id="jobsContainer">
+                <!-- Jobs will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- WhatsApp Recipients Section -->
+        <div id="recipients-section" class="content-section" style="display: none;">
+            <h3 class="section-title">WhatsApp Recipients</h3>
+            <p class="text-muted">Enter phone numbers (with country code) separated by commas. These numbers will receive WhatsApp notifications for contact forms, job applications, and chatbot conversations.</p>
+            
+            <form id="recipientsForm">
+                <div class="mb-3">
+                    <label for="whatsapp_recipients" class="form-label">WhatsApp Numbers</label>
+                    <textarea class="form-control" id="whatsapp_recipients" rows="3" placeholder="+91 7030720478, +91 9168402327"></textarea>
+                    <small class="text-muted">Format: +91 7030720478, +91 9168402327</small>
+                </div>
+                
+                <button type="button" class="btn btn-admin admin-save-btn" data-section="recipients">
+                    <i class="fas fa-save me-2"></i>Save Recipients
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    <script>
+        // Navigation handling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle section switching
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links and sections
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    const sectionId = this.getAttribute('data-section');
+                    const section = document.getElementById(sectionId + '-section');
+                    if (section) {
+                        section.style.display = 'block';
+                        
+                        // Load data for specific sections
+                        if (sectionId === 'team') {
+                            loadTeamData();
+                        } else if (sectionId === 'services') {
+                            loadServicesData();
+                        } else if (sectionId === 'jobs') {
+                            loadJobsData();
+                        }
+                    }
+                });
+            });
+            
+            // Handle save buttons
+            document.querySelectorAll('.admin-save-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const section = this.getAttribute('data-section');
+                    
+                    if (section === 'company') {
+                        saveCompanyData();
+                    } else if (section === 'services') {
+                        saveServicesData();
+                    } else if (section === 'jobs') {
+                        saveJobsData();
+                    } else if (section === 'team') {
+                        saveTeamData();
+                    } else if (section === 'recipients') {
+                        saveRecipientsData();
+                    }
+                });
+            });
+            
+            // Load initial data
+            loadDashboardData();
+        });
+        
+        function loadTeamData() {
+            // Load team data
+            fetch('/api/team')
+            .then(response => response.json())
+            .then(team => {
+                // Load CEO data
+                if (team.ceo) {
+                    document.getElementById('ceo_name').value = team.ceo.name || '';
+                    document.getElementById('ceo_title').value = team.ceo.title || 'Chief Executive Officer';
+                    document.getElementById('ceo_photo').value = team.ceo.photo || '';
+                    document.getElementById('ceo_message').value = team.ceo.message || '';
+                    document.getElementById('ceo_enabled').checked = team.ceo.enabled || false;
+                }
+                
+                // Load MD data
+                if (team.md) {
+                    document.getElementById('md_name').value = team.md.name || '';
+                    document.getElementById('md_title').value = team.md.title || 'Managing Director';
+                    document.getElementById('md_photo').value = team.md.photo || '';
+                    document.getElementById('md_message').value = team.md.message || '';
+                    document.getElementById('md_enabled').checked = team.md.enabled || false;
+                }
+                
+                // Load team members
+                if (team.members && team.members.length > 0) {
+                    team.members.forEach(member => {
+                        addTeamMember(member);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading team data:', error);
+            });
+        }
+        
+        function addTeamMember(memberData = null) {
+            const memberId = memberData ? memberData.id : Date.now();
+            const memberHtml = `
+                <div class="team-member-item mb-3 p-3 border rounded" data-member-id="${memberId}">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" name="member_name" value="${memberData ? memberData.name : ''}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <label class="form-label">Position</label>
+                                <input type="text" class="form-control" name="member_position" value="${memberData ? memberData.position : ''}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-2">
+                                <label class="form-label">Photo URL</label>
+                                <input type="text" class="form-control" name="member_photo" value="${memberData ? memberData.photo : ''}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="mb-2">
+                                <label class="form-label">Action</label>
+                                <button type="button" class="btn btn-sm btn-danger" onclick="removeTeamMember(${memberId})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('team-members-list').insertAdjacentHTML('beforeend', memberHtml);
+        }
+        
+        function removeTeamMember(memberId) {
+            const memberElement = document.querySelector(`[data-member-id="${memberId}"]`);
+            if (memberElement) {
+                memberElement.remove();
+            }
+        }
+        
+        function saveTeamData() {
+            const teamData = {
+                ceo: {
+                    name: document.getElementById('ceo_name').value,
+                    title: document.getElementById('ceo_title').value,
+                    photo: document.getElementById('ceo_photo').value,
+                    message: document.getElementById('ceo_message').value,
+                    enabled: document.getElementById('ceo_enabled').checked
+                },
+                md: {
+                    name: document.getElementById('md_name').value,
+                    title: document.getElementById('md_title').value,
+                    photo: document.getElementById('md_photo').value,
+                    message: document.getElementById('md_message').value,
+                    enabled: document.getElementById('md_enabled').checked
+                },
+                members: []
+            };
+            
+            // Collect team members
+            const memberElements = document.querySelectorAll('.team-member-item');
+            memberElements.forEach(element => {
+                const member = {
+                    id: parseInt(element.dataset.memberId),
+                    name: element.querySelector('[name="member_name"]').value,
+                    position: element.querySelector('[name="member_position"]').value,
+                    photo: element.querySelector('[name="member_photo"]').value
+                };
+                teamData.members.push(member);
+            });
+            
+            // Save team data
+            fetch('/api/team', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(teamData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Team data saved successfully!', 'success');
+                } else {
+                    showNotification('Error saving team data', 'error');
+                }
+            })
+            .catch(error => {
+                showNotification('Error saving team data', 'error');
+            });
+        }
+            function loadDashboardData() {
+            // Load jobs count
+            fetch('/api/jobs')
+            .then(response => response.json())
+            .then(jobs => {
+                document.getElementById('jobs-count').textContent = jobs.length + ' Active';
+            })
+            .catch(error => {
+                document.getElementById('jobs-count').textContent = 'Error';
+            });
+        }
+    </script>
+</body>
+</html>

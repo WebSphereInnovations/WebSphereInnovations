@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}{{ company_info.name }} - {{ company_info.tagline }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>{{ company_info.name }}</h1>
+            <p class="lead">Transforming Businesses Through Technology Innovation</p>
+            <p class="lead">{{ company_info.description }}</p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('services') }}" class="btn btn-light btn-lg me-3">Our Services</a>
+                <a href="{{ url_for('contact') }}" class="btn btn-outline-light btn-lg">Get In Touch</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Overview Section -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Our Services</h2>
+        <div class="row">
+            {% for service_key, service in services.items() %}
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-{{ service.icon }}"></i>
+                    </div>
+                    <h3 class="service-title">{{ service.title }}</h3>
+                    <p class="service-description">{{ service.description }}</p>
+                    <a href="{{ url_for('services') }}" class="btn btn-primary-custom">Learn More</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="section" style="background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="section-title">About WebSphere Innovations</h2>
+                <p class="lead">{{ company_info.description }}</p>
+                <p>We are a team of dedicated professionals committed to delivering innovative IT solutions that drive business success. Our expertise spans across cybersecurity, software development, data analytics, and cloud solutions.</p>
+                <p>Founded in 2024, we have quickly established ourselves as a trusted partner for businesses seeking digital transformation and enhanced security.</p>
+                <a href="{{ url_for('contact') }}" class="btn btn-primary-custom btn-lg">Contact Us Today</a>
+            </div>
+            <div class="col-md-6">
+                <div class="text-center">
+                    <i class="fas fa-shield-alt" style="font-size: 15rem; color: var(--primary-color); opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Us</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <i class="fas fa-rocket" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                    <h4>Innovative Solutions</h4>
+                    <p>We leverage cutting-edge technologies to provide innovative solutions that meet your business needs.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <i class="fas fa-users" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                    <h4>Expert Team</h4>
+                    <p>Our team consists of experienced professionals with deep expertise in various IT domains.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <i class="fas fa-clock" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                    <h4>24/7 Support</h4>
+                    <p>We provide round-the-clock support to ensure your business operations run smoothly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section" style="background: var(--gradient-primary);">
+    <div class="container text-center">
+        <h2 class="text-white mb-4">Ready to Transform Your Business?</h2>
+        <p class="text-white mb-4 lead">Let's discuss how we can help you achieve your digital transformation goals.</p>
+        <a href="{{ url_for('contact') }}" class="btn btn-light btn-lg">Get Started Now</a>
+    </div>
+</section>
+{% endblock %}

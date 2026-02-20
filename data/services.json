@@ -1,0 +1,22 @@
+{
+  "cybersecurity": {
+    "title": "Cybersecurity",
+    "description": "Protect your business from digital threats with advanced security solutions.",
+    "icon": "shield"
+  },
+  "software_development": {
+    "title": "Software Development",
+    "description": "Custom software solutions tailored to your business needs.",
+    "icon": "code"
+  },
+  "data_analytics": {
+    "title": "Data Analytics",
+    "description": "Transform data into actionable insights with advanced analytics.",
+    "icon": "chart"
+  },
+  "cloud_solutions": {
+    "title": "Cloud Solutions",
+    "description": "Scalable cloud infrastructure for your digital transformation.",
+    "icon": "cloud"
+  }
+}

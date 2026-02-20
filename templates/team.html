@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block title %}Our Team - {{ company_info.name }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="hero" style="padding: 120px 0 80px;">
+    <div class="container text-center">
+        <h1>Our Team</h1>
+        <p class="lead">Transforming Businesses Through Technology Innovation</p>
+        <p class="lead">Meet the talented individuals behind WebSphere Innovations</p>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="section">
+    <div class="container">
+        <!-- CEO Section -->
+        {% if team.ceo and team.ceo.enabled %}
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="team-leader-card text-center">
+                    <div class="leader-photo mb-4">
+                        {% if team.ceo.photo %}
+                        <img src="{{ team.ceo.photo }}" alt="{{ team.ceo.name }}" class="img-fluid rounded-circle">
+                        {% else %}
+                        <div class="photo-placeholder">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <h3 class="leader-name">{{ team.ceo.name }}</h3>
+                    <p class="leader-title">{{ team.ceo.title }}</p>
+                    {% if team.ceo.message %}
+                    <p class="leader-message">{{ team.ceo.message }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Managing Director Section -->
+        {% if team.md and team.md.enabled %}
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="team-leader-card text-center">
+                    <div class="leader-photo mb-4">
+                        {% if team.md.photo %}
+                        <img src="{{ team.md.photo }}" alt="{{ team.md.name }}" class="img-fluid rounded-circle">
+                        {% else %}
+                        <div class="photo-placeholder">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <h3 class="leader-name">{{ team.md.name }}</h3>
+                    <p class="leader-title">{{ team.md.title }}</p>
+                    {% if team.md.message %}
+                    <p class="leader-message">{{ team.md.message }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Team Members Section -->
+        {% if team.members and team.members|length > 0 %}
+        <div class="row">
+            <div class="col-12">
+                <h3 class="section-title text-center mb-5">Our Team Members</h3>
+            </div>
+            {% for member in team.members %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="team-member-card text-center">
+                    <div class="member-photo mb-3">
+                        {% if member.photo %}
+                        <img src="{{ member.photo }}" alt="{{ member.name }}" class="img-fluid rounded-circle">
+                        {% else %}
+                        <div class="photo-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <h5 class="member-name">{{ member.name }}</h5>
+                    <p class="member-position">{{ member.position }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- No Team Message -->
+        {% if not (team.ceo and team.ceo.enabled) and not (team.md and team.md.enabled) and not (team.members and team.members|length > 0) %}
+        <div class="text-center">
+            <i class="fas fa-users" style="font-size: 5rem; color: var(--gray-text); margin-bottom: 2rem;"></i>
+            <h3>Our Team is Growing</h3>
+            <p class="lead">We're building a talented team of professionals who are passionate about technology and innovation.</p>
+            <p>Join us on this exciting journey as we transform businesses through cutting-edge solutions.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.team-leader-card {
+    background: var(--darker-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.leader-photo {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.leader-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 5px solid var(--primary-color);
+    border-radius: 50%;
+}
+
+.photo-placeholder {
+    width: 200px;
+    height: 200px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 5px solid var(--primary-color);
+}
+
+.photo-placeholder i {
+    font-size: 4rem;
+    color: white;
+}
+
+.leader-name {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.leader-title {
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.leader-message {
+    font-size: 1.1rem;
+    color: var(--gray-text);
+    line-height: 1.6;
+    font-style: italic;
+}
+
+.team-member-card {
+    background: var(--darker-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 2rem;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.team-member-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.member-photo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.member-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+    border-radius: 50%;
+}
+
+.member-photo .photo-placeholder {
+    width: 120px;
+    height: 120px;
+    background: var(--gradient-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 3px solid var(--accent-color);
+}
+
+.member-photo .photo-placeholder i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.member-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--light-text);
+    margin-bottom: 0.5rem;
+}
+
+.member-position {
+    color: var(--gray-text);
+    margin-bottom: 0;
+}
+</style>
+{% endblock %}

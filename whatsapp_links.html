@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Links - WebSphere Innovations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .link-item {
+            background: #2a2a2a;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #25d366;
+        }
+        .whatsapp-link {
+            color: #25d366;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .whatsapp-link:hover {
+            text-decoration: underline;
+        }
+        .timestamp {
+            color: #888;
+            font-size: 0.9em;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            background: #333;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #25d366;
+            text-align: center;
+        }
+        .refresh-btn {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .refresh-btn:hover {
+            background: #128c7e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 WhatsApp Message Links</h1>
+        <p>Click on any link below to send the WhatsApp message instantly:</p>
+        
+        <button class="refresh-btn" onclick="location.reload()">🔄 Refresh Links</button>
+        
+        <div id="links-container">
+            <!-- Links will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        async function loadLinks() {
+            try {
+                const response = await fetch('logs/whatsapp_links.log');
+                const text = await response.text();
+                const lines = text.trim().split('\n').filter(line => line);
+                
+                const container = document.getElementById('links-container');
+                container.innerHTML = '';
+                
+                // Show last 10 links (most recent first)
+                const recentLines = lines.slice(-10).reverse();
+                
+                recentLines.forEach(line => {
+                    try {
+                        const data = JSON.parse(line);
+                        const linkDiv = document.createElement('div');
+                        linkDiv.className = 'link-item';
+                        linkDiv.innerHTML = `
+                            <div class="timestamp">🕐 ${new Date(data.timestamp).toLocaleString()}</div>
+                            <div><strong>📞 To:</strong> ${data.phone}</div>
+                            <div class="message"><strong>💬 Message:</strong> ${data.message}</div>
+                            <div>
+                                <a href="${data.whatsapp_link}" target="_blank" class="whatsapp-link">
+                                    📱 Click to Send WhatsApp Message
+                                </a>
+                            </div>
+                        `;
+                        container.appendChild(linkDiv);
+                    } catch (e) {
+                        console.error('Error parsing line:', e);
+                    }
+                });
+                
+                if (recentLines.length === 0) {
+                    container.innerHTML = '<p>No WhatsApp links found. Submit a contact form or job application to generate links.</p>';
+                }
+                
+            } catch (error) {
+                document.getElementById('links-container').innerHTML = 
+                    '<p>Error loading links. Make sure the application is running and forms have been submitted.</p>';
+            }
+        }
+        
+        // Load links when page loads
+        loadLinks();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadLinks, 30000);
+    </script>
+</body>
+</html>

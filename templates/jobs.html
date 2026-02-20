@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}Career Opportunities - {{ company_info.name }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="hero" style="padding: 120px 0 80px;">
+    <div class="container text-center">
+        <h1>Career Opportunities</h1>
+        <p class="lead">Join our team and build your future with WebSphere Innovations</p>
+    </div>
+</section>
+
+<!-- Jobs Section -->
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="jobs-intro text-center mb-5">
+                    <h3>Current Openings</h3>
+                    <p>We're always looking for talented individuals to join our growing team. If you're passionate about technology and innovation, we'd love to hear from you.</p>
+                </div>
+                
+                {% for job in jobs %}
+                <div class="job-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="job-title">{{ job.title }}</h5>
+                        <span class="badge bg-primary">{{ job.experience }}</span>
+                    </div>
+                    <p class="job-description">{{ job.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            Posted: {{ job.posting_date or 'This Month' }}
+                        </small>
+                        <button class="btn btn-primary-custom btn-sm" onclick="openJobModal('{{ job.id }}', '{{ job.title }}')">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% if not jobs %}
+                <div class="text-center">
+                    <i class="fas fa-briefcase" style="font-size: 5rem; color: var(--gray-text); margin-bottom: 2rem;"></i>
+                    <h3>No Current Openings</h3>
+                    <p class="lead">We don't have any current openings, but we're always looking for talented individuals.</p>
+                    <p>Feel free to send us your resume and we'll keep you in mind for future opportunities.</p>
+                    <a href="{{ url_for('contact') }}" class="btn btn-primary-custom btn-lg">Contact Us</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Work With Us Section -->
+<section class="section" style="background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);">
+    <div class="container">
+        <h2 class="section-title">Why Work With Us</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h4>Learning & Growth</h4>
+                    <p>Continuous learning opportunities and professional development programs to help you grow your skills.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>Great Team</h4>
+                    <p>Work with talented professionals who are passionate about technology and innovation.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h4>Work-Life Balance</h4>
+                    <p>We believe in maintaining a healthy work-life balance for all our team members.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h4>Innovation</h4>
+                    <p>Be part of cutting-edge projects and innovative solutions that make a real impact.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h4>Competitive Salary</h4>
+                    <p>Competitive compensation packages and performance-based bonuses.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h4>Health & Wellness</h4>
+                    <p>Comprehensive health insurance and wellness programs for you and your family.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Culture Section -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Our Culture</h2>
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h3>Join Our Innovative Team</h3>
+                <p class="lead">At WebSphere Innovations, we foster a culture of innovation, collaboration, and continuous learning.</p>
+                <p>We believe in empowering our team members to take ownership of their work and contribute to meaningful projects that drive business success.</p>
+                <p>Our diverse team brings together different perspectives and experiences, creating an environment where creativity and innovation thrive.</p>
+                <ul>
+                    <li>Collaborative work environment</li>
+                    <li>Regular team building activities</li>
+                    <li>Open communication and transparency</li>
+                    <li>Recognition and rewards for excellence</li>
+                    <li>Flexible work arrangements</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <div class="culture-image text-center">
+                    <i class="fas fa-handshake" style="font-size: 10rem; color: var(--primary-color); opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Job Application Modal -->
+<div class="modal fade" id="jobApplicationModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Apply for Position</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form class="job-application-form" id="jobApplicationForm">
+                    <input type="hidden" id="job_id" name="job_id">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Position</label>
+                        <input type="text" class="form-control" id="job_title_display" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address *</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="experience" class="form-label">Years of Experience</label>
+                        <input type="number" class="form-control" id="experience" name="experience" min="0">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="cv" class="form-label">Resume/CV *</label>
+                        <input type="file" class="form-control" id="cv" name="cv" accept=".pdf,.doc,.docx" required>
+                        <small class="text-muted">Accepted formats: PDF, DOC, DOCX (Max size: 5MB)</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Cover Letter / Additional Information</label>
+                        <textarea class="form-control" id="message" name="message" rows="4" placeholder="Tell us why you're interested in this position..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="consent" required>
+                            <label class="form-check-label" for="consent">
+                                I agree that WebSphere Innovations can contact me regarding this application and future opportunities.
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="jobApplicationForm" class="btn btn-primary-custom">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Application
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.benefit-card {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+}
+
+.benefit-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.job-meta {
+    display: flex;
+    gap: 2rem;
+    margin: 1rem 0;
+    color: var(--gray-text);
+    font-size: 0.9rem;
+}
+
+.job-meta span {
+    display: flex;
+    align-items: center;
+}
+
+.jobs-intro {
+    max-width: 600px;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border: 1px solid var(--border-color);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+}
+
+.modal-title {
+    color: var(--light-text);
+}
+
+.form-control, .form-select {
+    background-color: var(--darker-bg);
+    border: 1px solid var(--border-color);
+    color: var(--light-text);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--darker-bg);
+    border-color: var(--primary-color);
+    color: var(--light-text);
+}
+
+.form-label {
+    color: var(--gray-text);
+    font-weight: bold;
+}
+
+.form-check-input {
+    background-color: var(--darker-bg);
+    border-color: var(--border-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-label {
+    color: var(--gray-text);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle apply button clicks
+    document.querySelectorAll('.apply-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const jobId = this.dataset.jobId;
+            const jobTitle = this.dataset.jobTitle;
+            showJobApplication(jobId, jobTitle);
+        });
+    });
+});
+
+function showJobApplication(jobId, jobTitle) {
+    document.getElementById('job_id').value = jobId;
+    document.getElementById('job_title_display').value = jobTitle;
+    
+    const modal = new bootstrap.Modal(document.getElementById('jobApplicationModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

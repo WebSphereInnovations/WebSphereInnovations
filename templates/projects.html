@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Our Projects - {{ company_info.name }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="hero" style="padding: 120px 0 80px;">
+    <div class="container text-center">
+        <h1>Our Projects</h1>
+        <p class="lead">Showcasing our successful IT solutions and innovations</p>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section class="section">
+    <div class="container">
+        {% if projects %}
+        <div class="row">
+            {% for project in projects %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="project-card">
+                    <div class="project-image">
+                        {% if project.image %}
+                        <img src="{{ project.image }}" alt="{{ project.title }}" class="img-fluid">
+                        {% else %}
+                        <div class="placeholder-image">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="project-content">
+                        <h4>{{ project.title }}</h4>
+                        <p class="project-category">{{ project.category }}</p>
+                        <p class="project-description">{{ project.description }}</p>
+                        {% if project.technologies %}
+                        <div class="project-technologies">
+                            {% for tech in project.technologies %}
+                            <span class="tech-tag">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if project.client %}
+                        <p class="project-client"><strong>Client:</strong> {{ project.client }}</p>
+                        {% endif %}
+                        {% if project.date %}
+                        <p class="project-date"><strong>Completed:</strong> {{ project.date }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center">
+            <i class="fas fa-folder-open" style="font-size: 5rem; color: var(--gray-text); margin-bottom: 2rem;"></i>
+            <h3>Projects Coming Soon</h3>
+            <p class="lead">We're working on exciting projects that will be showcased here soon.</p>
+            <p>Our team is currently developing innovative solutions for our clients. Check back later to see our portfolio of successful projects.</p>
+            <a href="{{ url_for('contact') }}" class="btn btn-primary-custom btn-lg">Discuss Your Project</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Approach Section -->
+<section class="section" style="background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);">
+    <div class="container">
+        <h2 class="section-title">Our Project Approach</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="approach-card">
+                    <div class="approach-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h4>Innovation First</h4>
+                    <p>We approach every project with innovative thinking and cutting-edge technologies to deliver solutions that give our clients a competitive edge.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="approach-card">
+                    <div class="approach-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4>Client Collaboration</h4>
+                    <p>We work closely with our clients throughout the project lifecycle, ensuring transparency and alignment with business objectives.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="approach-card">
+                    <div class="approach-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h4>Quality Delivery</h4>
+                    <p>Every project is delivered with the highest quality standards, ensuring reliability, security, and optimal performance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section" style="background: var(--gradient-primary);">
+    <div class="container text-center">
+        <h2 class="text-white mb-4">Have a Project in Mind?</h2>
+        <p class="text-white mb-4 lead">Let's work together to bring your ideas to life with our expert IT solutions.</p>
+        <a href="{{ url_for('contact') }}" class="btn btn-light btn-lg">Start Your Project</a>
+    </div>
+</section>
+
+<style>
+.project-card {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 123, 255, 0.3);
+}
+
+.project-image {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder-image {
+    width: 100%;
+    height: 100%;
+    background: var(--darker-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--gray-text);
+}
+
+.project-content {
+    padding: 1.5rem;
+}
+
+.project-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.project-category {
+    color: var(--accent-color);
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.project-description {
+    color: var(--gray-text);
+    margin-bottom: 1rem;
+}
+
+.project-technologies {
+    margin-bottom: 1rem;
+}
+
+.tech-tag {
+    display: inline-block;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.project-client, .project-date {
+    color: var(--gray-text);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.approach-card {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.approach-card:hover {
+    transform: translateY(-5px);
+}
+
+.approach-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+    color: white;
+}
+</style>
+{% endblock %}
