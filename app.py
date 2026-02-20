@@ -172,20 +172,15 @@ def submit_contact():
         
         # Use WhatsApp service to send notification
         try:
-            # Use simple WhatsApp fix for immediate results
-            from simple_whatsapp_fix import get_simple_whatsapp_service
-            whatsapp_service = get_simple_whatsapp_service()
+            # Use immediate WhatsApp fix for real message sending
+            from immediate_whatsapp_fix import get_immediate_whatsapp_service
+            whatsapp_service = get_immediate_whatsapp_service()
             
-            # Send contact notification
-            result = whatsapp_service.send_whatsapp_notification("contact", {
-                'name': name,
-                'email': email,
-                'phone': phone,
-                'message': message
-            })
+            # Send contact notification immediately
+            result = whatsapp_service.send_contact_notification(name, email, phone, message)
             
             if result['success']:
-                print(f"✅ Contact notification processed successfully")
+                print(f"✅ Contact notification sent immediately to WhatsApp")
                 return jsonify({'success': True, 'message': 'Thank you for contacting us! We will get back to you soon.'})
             else:
                 print(f"❌ Contact notification failed: {result}")
@@ -222,22 +217,15 @@ def apply_job():
         
         # Use WhatsApp service to send notification
         try:
-            # Use simple WhatsApp fix for immediate results
-            from simple_whatsapp_fix import get_simple_whatsapp_service
-            whatsapp_service = get_simple_whatsapp_service()
+            # Use immediate WhatsApp fix for real message sending
+            from immediate_whatsapp_fix import get_immediate_whatsapp_service
+            whatsapp_service = get_immediate_whatsapp_service()
             
-            # Send job application notification
-            result = whatsapp_service.send_whatsapp_notification("job_application", {
-                'job_title': job_id,
-                'name': name,
-                'email': email,
-                'phone': phone,
-                'message': message,
-                'cv_filename': cv_filename
-            })
+            # Send job application notification immediately
+            result = whatsapp_service.send_job_application_notification(job_id, name, email, phone, message, cv_filename)
             
             if result['success']:
-                print(f"✅ Job application notification processed successfully")
+                print(f"✅ Job application notification sent immediately to WhatsApp")
                 return jsonify({'success': True, 'message': 'Thank you for applying! We will review your application and get back to you soon.'})
             else:
                 print(f"❌ Job application notification failed: {result}")
@@ -262,17 +250,15 @@ def chatbot_submit():
         
         # Use WhatsApp service to send notification
         try:
-            # Use simple WhatsApp fix for immediate results
-            from simple_whatsapp_fix import get_simple_whatsapp_service
-            whatsapp_service = get_simple_whatsapp_service()
+            # Use immediate WhatsApp fix for real message sending
+            from immediate_whatsapp_fix import get_immediate_whatsapp_service
+            whatsapp_service = get_immediate_whatsapp_service()
             
-            # Send chatbot notification
-            result = whatsapp_service.send_whatsapp_notification("chatbot", {
-                'transcript': chat_transcript
-            })
+            # Send chatbot notification immediately
+            result = whatsapp_service.send_chatbot_notification(chat_transcript)
             
             if result['success']:
-                print(f"✅ Chatbot notification processed successfully")
+                print(f"✅ Chatbot notification sent immediately to WhatsApp")
                 return jsonify({'success': True, 'message': 'Chat transcript sent successfully'})
             else:
                 print(f"❌ Chatbot notification failed: {result}")
