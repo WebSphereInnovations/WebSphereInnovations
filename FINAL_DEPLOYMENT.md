@@ -2,7 +2,7 @@
 
 ## 🚀 **Your Website is Ready for Deployment!**
 
-### 📋 **Easiest Deployment - Render.com (RECOMMENDED)**
+### 📋 **EASIEST DEPLOYMENT - Render.com (RECOMMENDED)**
 
 #### 🌟 **Step 1: Go to Render**
 1. Visit: **https://render.com**
@@ -108,14 +108,6 @@ After deployment, you can:
 - ✅ **Custom Domain**: Add your own domain
 - ✅ **Environment Variables**: Secure configuration
 - ✅ **Logs**: Monitor your application
-
-### 🚀 **Alternative: Koyeb**
-
-If you prefer Koyeb:
-1. Visit: https://www.koyeb.com
-2. Login with GitHub
-3. Create service from your repository
-4. URL will be: `https://websphere-innovations.koyeb.app`
 
 ### 🎉 **Congratulations!**
 
