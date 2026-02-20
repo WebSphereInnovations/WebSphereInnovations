@@ -1,8 +1,8 @@
 import requests
-import json
 import os
-from datetime import datetime
+import json
 import urllib.parse
+from datetime import datetime
 import subprocess
 from notification_service import show_whatsapp_notification
 
@@ -71,7 +71,6 @@ class WhatsAppService:
             # Try to open WhatsApp Web automatically (if possible)
             try:
                 import webbrowser
-                import urllib.parse
                 
                 # For mobile users, create WhatsApp share link
                 mobile_whatsapp_link = f"https://wa.me/{phone_number.replace('+', '').replace(' ', '')}?text={urllib.parse.quote(message)}"
@@ -83,6 +82,8 @@ class WhatsAppService:
                 log_entry['auto_opened'] = True
                 log_entry['mobile_friendly'] = True
             except Exception as e:
+                # Fallback - create mobile link using already imported urllib.parse
+                mobile_whatsapp_link = f"https://wa.me/{phone_number.replace('+', '').replace(' ', '')}?text={urllib.parse.quote(message)}"
                 print(f"🌐 Please manually open: {mobile_whatsapp_link}")
                 print(f"⚠️ Error: {e}")
                 log_entry['auto_opened'] = False
@@ -104,7 +105,7 @@ class WhatsAppService:
                 'success': True,
                 'phone': phone_number,
                 'whatsapp_link': whatsapp_link,
-                'mobile_link': f"https://wa.me/{phone_number.replace('+', '').replace(' ', '')}?text={urllib.parse.quote(message)}",
+                'mobile_link': f"https://wa.me/{phone_number.replace('+', '').replace(' ', '')}?text={encoded_message}",
                 'message': 'WhatsApp message prepared and link opened',
                 'method': 'Direct WhatsApp Send',
                 'auto_opened': log_entry.get('auto_opened', False),

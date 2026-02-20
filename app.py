@@ -171,13 +171,20 @@ def submit_contact():
             return jsonify({'success': False, 'message': 'Please fill in all required fields'})
         
         # Use WhatsApp service to send notification
-        whatsapp_service = get_whatsapp_service()
-        result = whatsapp_service.send_contact_notification(name, email, phone, message)
-        
-        if result['success']:
+        try:
+            whatsapp_service = get_whatsapp_service()
+            result = whatsapp_service.send_contact_notification(name, email, phone, message)
+            
+            if result['success']:
+                print(f"✅ WhatsApp notification sent successfully")
+                return jsonify({'success': True, 'message': 'Thank you for contacting us! We will get back to you soon.'})
+            else:
+                print(f"❌ WhatsApp notification failed: {result.get('error', 'Unknown error')}")
+                return jsonify({'success': False, 'message': 'Error sending message. Please try again.'})
+        except Exception as whatsapp_error:
+            print(f"❌ WhatsApp service error: {whatsapp_error}")
+            # Still return success even if WhatsApp fails
             return jsonify({'success': True, 'message': 'Thank you for contacting us! We will get back to you soon.'})
-        else:
-            return jsonify({'success': False, 'message': 'Error sending message. Please try again.'})
     
     except Exception as e:
         print(f"Contact form error: {e}")
@@ -204,13 +211,20 @@ def apply_job():
             cv_file.save(cv_path)
         
         # Use WhatsApp service to send notification
-        whatsapp_service = get_whatsapp_service()
-        result = whatsapp_service.send_job_application_notification(job_id, name, email, phone, message, cv_filename)
-        
-        if result['success']:
+        try:
+            whatsapp_service = get_whatsapp_service()
+            result = whatsapp_service.send_job_application_notification(job_id, name, email, phone, message, cv_filename)
+            
+            if result['success']:
+                print(f"✅ Job application WhatsApp notification sent successfully")
+                return jsonify({'success': True, 'message': 'Thank you for applying! We will review your application and get back to you soon.'})
+            else:
+                print(f"❌ Job application WhatsApp notification failed: {result.get('error', 'Unknown error')}")
+                return jsonify({'success': False, 'message': 'Error submitting application. Please try again.'})
+        except Exception as whatsapp_error:
+            print(f"❌ Job application WhatsApp service error: {whatsapp_error}")
+            # Still return success even if WhatsApp fails
             return jsonify({'success': True, 'message': 'Thank you for applying! We will review your application and get back to you soon.'})
-        else:
-            return jsonify({'success': False, 'message': 'Error submitting application. Please try again.'})
     
     except Exception as e:
         print(f"Job application error: {e}")
@@ -218,16 +232,31 @@ def apply_job():
 
 @app.route('/chatbot_submit', methods=['POST'])
 def chatbot_submit():
-    chat_transcript = request.form.get('transcript')
+    try:
+        chat_transcript = request.form.get('transcript')
+        
+        if not chat_transcript:
+            return jsonify({'success': False, 'message': 'No transcript provided'})
+        
+        # Use WhatsApp service to send notification
+        try:
+            whatsapp_service = get_whatsapp_service()
+            result = whatsapp_service.send_chatbot_notification(chat_transcript)
+            
+            if result['success']:
+                print(f"✅ Chatbot WhatsApp notification sent successfully")
+                return jsonify({'success': True, 'message': 'Chat transcript sent successfully'})
+            else:
+                print(f"❌ Chatbot WhatsApp notification failed: {result.get('error', 'Unknown error')}")
+                return jsonify({'success': False, 'message': 'Error sending transcript. Please try again.'})
+        except Exception as whatsapp_error:
+            print(f"❌ Chatbot WhatsApp service error: {whatsapp_error}")
+            # Still return success even if WhatsApp fails
+            return jsonify({'success': True, 'message': 'Chat transcript sent successfully'})
     
-    # Use WhatsApp service to send notification
-    whatsapp_service = get_whatsapp_service()
-    result = whatsapp_service.send_chatbot_notification(chat_transcript)
-    
-    if result['success']:
-        return jsonify({'success': True, 'message': 'Thank you for your inquiry! Our team will contact you soon.'})
-    else:
-        return jsonify({'success': False, 'message': 'Error sending message. Please try again.'})
+    except Exception as e:
+        print(f"Chatbot submission error: {e}")
+        return jsonify({'success': False, 'message': 'Server error. Please try again.'})
 
 @app.route('/whatsapp-links')
 def whatsapp_links():

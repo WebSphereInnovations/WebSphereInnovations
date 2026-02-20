@@ -157,11 +157,13 @@ class Chatbot {
     endConversation() {
         const contactInfo = `Thank you for reaching out! Please connect with our team through Get in Touch:
 
-Phone: +91 7030720478
+📞 Phone: +91 7030720478
 
-Email: info@websphereinnovations.com
+📧 Email: info@websphereinnovations.com
 
-WhatsApp: +91 7030720478, +91 9168402327`;
+📱 WhatsApp: +91 7030720478, +91 9168402327
+
+🌐 Website: https://websphere-innovations.onrender.com/contact`;
         
         this.addMessage('bot', contactInfo);
         
