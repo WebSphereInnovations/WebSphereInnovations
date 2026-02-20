@@ -172,19 +172,24 @@ def submit_contact():
         
         # Use WhatsApp service to send notification
         try:
-            # Use immediate WhatsApp fix for real message sending
-            from immediate_whatsapp_fix import get_immediate_whatsapp_service
-            whatsapp_service = get_immediate_whatsapp_service()
+            # Use user WhatsApp service for direct link generation
+            from user_whatsapp_service import get_user_whatsapp_service
+            whatsapp_service = get_user_whatsapp_service()
             
-            # Send contact notification immediately
+            # Generate user WhatsApp link
             result = whatsapp_service.send_contact_notification(name, email, phone, message)
             
             if result['success']:
-                print(f"✅ Contact notification sent immediately to WhatsApp")
-                return jsonify({'success': True, 'message': 'Thank you for contacting us! We will get back to you soon.'})
+                print(f"✅ User WhatsApp link generated successfully")
+                return jsonify({
+                    'success': True, 
+                    'message': 'Thank you for contacting us! Click the WhatsApp link to send us your message directly.',
+                    'whatsapp_link': result.get('user_whatsapp_link', ''),
+                    'user_action_required': True
+                })
             else:
-                print(f"❌ Contact notification failed: {result}")
-                return jsonify({'success': False, 'message': 'Error sending message. Please try again.'})
+                print(f"❌ User WhatsApp link generation failed: {result}")
+                return jsonify({'success': False, 'message': 'Error generating WhatsApp link. Please try again.'})
                 
         except Exception as whatsapp_error:
             print(f"❌ WhatsApp service error: {whatsapp_error}")
@@ -219,11 +224,11 @@ def apply_job():
         
         # Use WhatsApp service to send notification
         try:
-            # Use immediate WhatsApp fix for real message sending
-            from immediate_whatsapp_fix import get_immediate_whatsapp_service
-            whatsapp_service = get_immediate_whatsapp_service()
+            # Use user WhatsApp service for direct link generation
+            from user_whatsapp_service import get_user_whatsapp_service
+            whatsapp_service = get_user_whatsapp_service()
             
-            # Send job application notification immediately with CV details
+            # Generate user WhatsApp link for job application
             result = whatsapp_service.send_job_application_notification(
                 job_id, name, email, phone, message, 
                 cv_info.get('filename', ''), 
@@ -232,11 +237,16 @@ def apply_job():
             )
             
             if result['success']:
-                print(f"✅ Job application notification sent immediately to WhatsApp")
-                return jsonify({'success': True, 'message': 'Thank you for applying! We will review your application and get back to you soon.'})
+                print(f"✅ User WhatsApp link generated for job application")
+                return jsonify({
+                    'success': True, 
+                    'message': 'Thank you for applying! Click the WhatsApp link to send us your application directly.',
+                    'whatsapp_link': result.get('user_whatsapp_link', ''),
+                    'user_action_required': True
+                })
             else:
-                print(f"❌ Job application notification failed: {result}")
-                return jsonify({'success': False, 'message': 'Error submitting application. Please try again.'})
+                print(f"❌ User WhatsApp link generation failed: {result}")
+                return jsonify({'success': False, 'message': 'Error generating WhatsApp link. Please try again.'})
                 
         except Exception as whatsapp_error:
             print(f"❌ WhatsApp service error: {whatsapp_error}")
@@ -257,19 +267,24 @@ def chatbot_submit():
         
         # Use WhatsApp service to send notification
         try:
-            # Use immediate WhatsApp fix for real message sending
-            from immediate_whatsapp_fix import get_immediate_whatsapp_service
-            whatsapp_service = get_immediate_whatsapp_service()
+            # Use user WhatsApp service for direct link generation
+            from user_whatsapp_service import get_user_whatsapp_service
+            whatsapp_service = get_user_whatsapp_service()
             
-            # Send chatbot notification immediately
+            # Generate user WhatsApp link for chatbot
             result = whatsapp_service.send_chatbot_notification(chat_transcript)
             
             if result['success']:
-                print(f"✅ Chatbot notification sent immediately to WhatsApp")
-                return jsonify({'success': True, 'message': 'Chat transcript sent successfully'})
+                print(f"✅ User WhatsApp link generated for chatbot")
+                return jsonify({
+                    'success': True, 
+                    'message': 'Thank you for using our chatbot! Click the WhatsApp link to send us the conversation directly.',
+                    'whatsapp_link': result.get('user_whatsapp_link', ''),
+                    'user_action_required': True
+                })
             else:
-                print(f"❌ Chatbot notification failed: {result}")
-                return jsonify({'success': False, 'message': 'Error sending transcript. Please try again.'})
+                print(f"❌ User WhatsApp link generation failed: {result}")
+                return jsonify({'success': False, 'message': 'Error generating WhatsApp link. Please try again.'})
                 
         except Exception as whatsapp_error:
             print(f"❌ WhatsApp service error: {whatsapp_error}")

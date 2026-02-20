@@ -345,11 +345,25 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showAlert(data.message, 'success');
-                    this.reset();
-                    // Close modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('jobApplicationModal'));
-                    modal.hide();
+                    if (data.user_action_required && data.whatsapp_link) {
+                        // Show success message with WhatsApp link
+                        showAlert(data.message, 'success');
+                        this.reset();
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('jobApplicationModal'));
+                        modal.hide();
+                        
+                        // Open WhatsApp link in new tab
+                        setTimeout(() => {
+                            window.open(data.whatsapp_link, '_blank');
+                        }, 1000);
+                    } else {
+                        showAlert(data.message, 'success');
+                        this.reset();
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('jobApplicationModal'));
+                        modal.hide();
+                    }
                 } else {
                     showAlert(data.message || 'Error submitting application', 'error');
                 }

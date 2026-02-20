@@ -188,7 +188,24 @@ class Chatbot {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Transcript sent successfully');
+            if (data.success) {
+                if (data.user_action_required && data.whatsapp_link) {
+                    // Show success message with WhatsApp link
+                    console.log('Transcript sent successfully');
+                    showAlert(data.message, 'success');
+                    
+                    // Open WhatsApp link in new tab
+                    setTimeout(() => {
+                        window.open(data.whatsapp_link, '_blank');
+                    }, 1000);
+                } else {
+                    console.log('Transcript sent successfully');
+                    showAlert(data.message, 'success');
+                }
+            } else {
+                console.error('Error sending transcript:', data.message);
+                showAlert(data.message || 'Error sending transcript', 'error');
+            }
         })
         .catch(error => {
             console.error('Error sending transcript:', error);
@@ -252,7 +269,17 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showAlert(data.message, 'success');
+                    if (data.user_action_required && data.whatsapp_link) {
+                        // Show success message with WhatsApp link
+                        showAlert(data.message, 'success');
+                        
+                        // Open WhatsApp link in new tab
+                        setTimeout(() => {
+                            window.open(data.whatsapp_link, '_blank');
+                        }, 1000);
+                    } else {
+                        showAlert(data.message, 'success');
+                    }
                     this.reset();
                 } else {
                     showAlert(data.message || 'Error sending message', 'error');
