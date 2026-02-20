@@ -71,12 +71,22 @@ class WhatsAppService:
             # Try to open WhatsApp Web automatically (if possible)
             try:
                 import webbrowser
-                webbrowser.open(whatsapp_link)
-                print(f"🌐 WhatsApp Web opened automatically in browser")
+                import urllib.parse
+                
+                # For mobile users, create WhatsApp share link
+                mobile_whatsapp_link = f"https://wa.me/{phone_number.replace('+', '').replace(' ', '')}?text={urllib.parse.quote(message)}"
+                
+                # Try to open WhatsApp mobile app
+                webbrowser.open(mobile_whatsapp_link)
+                print(f"🌐 WhatsApp opened (mobile-friendly)")
+                print(f"📱 Mobile Link: {mobile_whatsapp_link}")
                 log_entry['auto_opened'] = True
-            except:
-                print(f"🌐 Please manually open: {whatsapp_link}")
+                log_entry['mobile_friendly'] = True
+            except Exception as e:
+                print(f"🌐 Please manually open: {mobile_whatsapp_link}")
+                print(f"⚠️ Error: {e}")
                 log_entry['auto_opened'] = False
+                log_entry['mobile_friendly'] = False
             
             # Show immediate desktop notification (with fallback)
             try:
@@ -94,9 +104,11 @@ class WhatsAppService:
                 'success': True,
                 'phone': phone_number,
                 'whatsapp_link': whatsapp_link,
+                'mobile_link': f"https://wa.me/{phone_number.replace('+', '').replace(' ', '')}?text={urllib.parse.quote(message)}",
                 'message': 'WhatsApp message prepared and link opened',
                 'method': 'Direct WhatsApp Send',
-                'auto_opened': log_entry.get('auto_opened', False)
+                'auto_opened': log_entry.get('auto_opened', False),
+                'mobile_friendly': log_entry.get('mobile_friendly', False)
             }
             
         except Exception as e:
@@ -255,7 +267,9 @@ class WhatsAppService:
 💬 Message: {message}
 
 🕐 Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-🌐 From: WebSphere Innovations Website"""
+🌐 From: WebSphere Innovations Website
+
+✅ Thank you for contacting us! Our team will connect with you shortly."""
         
         return self.send_message(whatsapp_message, self._get_recipients())
     
@@ -273,7 +287,9 @@ class WhatsAppService:
 📎 CV: {cv_filename or 'Not provided'}
 
 🕐 Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-🌐 From: WebSphere Innovations Website"""
+🌐 From: WebSphere Innovations Website
+
+✅ Thank you for applying! Our team will review your application and connect with you soon."""
         
         return self.send_message(whatsapp_message, self._get_recipients())
     
@@ -286,7 +302,9 @@ class WhatsAppService:
 {transcript}
 
 🕐 Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-🌐 From: WebSphere Innovations Website"""
+🌐 From: WebSphere Innovations Website
+
+✅ Thank you for using our chatbot! Our team will connect with you shortly."""
         
         return self.send_message(whatsapp_message, self._get_recipients())
     

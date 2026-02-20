@@ -359,6 +359,42 @@ def api_jobs():
     
     return jsonify(jobs)
 
+@app.route('/api/settings', methods=['GET', 'POST'])
+def api_settings():
+    if 'admin_logged_in' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    if request.method == 'POST':
+        data = request.get_json()
+        
+        # Handle password change
+        if 'current_password' in data and 'new_password' in data:
+            current_password = data.get('current_password')
+            new_password = data.get('new_password')
+            
+            # Load current credentials
+            credentials = load_data('admin_credentials')
+            
+            if credentials.get('password') == current_password:
+                credentials['password'] = new_password
+                save_data('admin_credentials', credentials)
+                return jsonify({'success': True, 'message': 'Password changed successfully'})
+            else:
+                return jsonify({'success': False, 'message': 'Current password is incorrect'})
+        
+        # Handle WhatsApp mode
+        if 'whatsapp_mode' in data:
+            settings = load_data('settings') if os.path.exists('data/settings.json') else {}
+            settings['whatsapp_mode'] = data.get('whatsapp_mode', 'direct')
+            save_data('settings', settings)
+            return jsonify({'success': True, 'message': 'Settings saved successfully'})
+        
+        return jsonify({'success': False, 'message': 'Invalid request'})
+    
+    else:  # GET request
+        settings = load_data('settings') if os.path.exists('data/settings.json') else {}
+        return jsonify(settings)
+
 @app.route('/api/recipients', methods=['GET', 'POST'])
 def api_recipients():
     if 'admin_logged_in' not in session:
