@@ -324,6 +324,46 @@ document.addEventListener('DOMContentLoaded', function() {
             showJobApplication(jobId, jobTitle);
         });
     });
+    
+    // Handle job application form submission
+    const jobApplicationForm = document.getElementById('jobApplicationForm');
+    if (jobApplicationForm) {
+        jobApplicationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+            
+            fetch('/apply_job', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    this.reset();
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('jobApplicationModal'));
+                    modal.hide();
+                } else {
+                    showAlert(data.message || 'Error submitting application', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Error submitting application. Please try again.', 'error');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            });
+        });
+    }
 });
 
 function showJobApplication(jobId, jobTitle) {
