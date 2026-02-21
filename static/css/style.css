@@ -24,6 +24,21 @@ body {
     line-height: 1.6;
 }
 
+/* Logo Styles */
+.navbar-logo {
+    height: 40px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .navbar-logo {
+        height: 30px;
+        max-width: 150px;
+    }
+}
+
 /* Header Styles */
 .header {
     background-color: var(--darker-bg);
