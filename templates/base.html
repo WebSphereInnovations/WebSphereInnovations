@@ -40,16 +40,16 @@
                             <a class="nav-link" href="{{ url_for('home') }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('services') }}">Services</a>
+                            <a class="nav-link" href="{{ url_for('services') }}" {% if not navigation.services_visible %}style="display: none;"{% endif %}>Services</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('projects') }}">Projects</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('team') }}">Team</a>
+                            <a class="nav-link" href="{{ url_for('team') }}" {% if not navigation.team_visible %}style="display: none;"{% endif %}>Team</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('jobs') }}">Careers</a>
+                            <a class="nav-link" href="{{ url_for('jobs') }}" {% if not navigation.careers_visible %}style="display: none;"{% endif %}>Careers</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>

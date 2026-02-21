@@ -116,6 +116,30 @@ def send_whatsapp_message(message, recipients=None):
         return {'success': False, 'error': str(e)}
 
 # Routes
+@app.context_processor
+def inject_navigation():
+    """Inject navigation visibility settings into all templates"""
+    try:
+        navigation_file = 'data/navigation.json'
+        if os.path.exists(navigation_file):
+            with open(navigation_file, 'r') as f:
+                navigation = json.load(f)
+        else:
+            # Default navigation settings
+            navigation = {
+                'services_visible': True,
+                'team_visible': True,
+                'careers_visible': True
+            }
+        return {'navigation': navigation}
+    except:
+        # Return default navigation if error occurs
+        return {'navigation': {
+            'services_visible': True,
+            'team_visible': True,
+            'careers_visible': True
+        }}
+
 @app.route('/')
 def home():
     company_info = load_data('company_info')
@@ -209,18 +233,21 @@ def apply_job():
         phone = request.form.get('phone')
         message = request.form.get('message')
         
-        if not all([job_id, name, email, message]):
+        if not all([job_id, name, email, phone, message]):
             return jsonify({'success': False, 'message': 'Please fill in all required fields'})
         
-        # Handle file upload
+        # Check if CV file is uploaded
         cv_file = request.files.get('cv')
+        if not cv_file or cv_file.filename == '':
+            return jsonify({'success': False, 'message': 'Please upload your resume/CV'})
+        
+        # Handle file upload
         cv_info = {'success': False}
         
-        if cv_file:
-            # Use CV file handler
-            from cv_file_handler import get_cv_handler
-            cv_handler = get_cv_handler()
-            cv_info = cv_handler.save_cv_file(cv_file, name)
+        # Use CV file handler
+        from cv_file_handler import get_cv_handler
+        cv_handler = get_cv_handler()
+        cv_info = cv_handler.save_cv_file(cv_file, name)
         
         # Use WhatsApp service to send notification
         try:
@@ -384,6 +411,56 @@ def api_projects():
         return jsonify({'success': True})
     
     return jsonify(load_data('projects'))
+
+@app.route('/api/navigation', methods=['GET'])
+def get_navigation():
+    """Get navigation visibility settings"""
+    try:
+        navigation_file = 'data/navigation.json'
+        if os.path.exists(navigation_file):
+            with open(navigation_file, 'r') as f:
+                navigation = json.load(f)
+        else:
+            # Default navigation settings
+            navigation = {
+                'services_visible': True,
+                'team_visible': True,
+                'careers_visible': True
+            }
+            # Create default file
+            os.makedirs('data', exist_ok=True)
+            with open(navigation_file, 'w') as f:
+                json.dump(navigation, f, indent=4)
+        
+        return jsonify(navigation)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/navigation', methods=['POST'])
+def save_navigation():
+    """Save navigation visibility settings"""
+    try:
+        navigation_data = request.get_json()
+        
+        # Validate data
+        if not navigation_data:
+            return jsonify({'success': False, 'message': 'No data provided'}), 400
+        
+        # Ensure all required fields exist
+        navigation = {
+            'services_visible': navigation_data.get('services_visible', True),
+            'team_visible': navigation_data.get('team_visible', True),
+            'careers_visible': navigation_data.get('careers_visible', True)
+        }
+        
+        # Save to file
+        os.makedirs('data', exist_ok=True)
+        with open('data/navigation.json', 'w') as f:
+            json.dump(navigation, f, indent=4)
+        
+        return jsonify({'success': True, 'message': 'Navigation settings saved successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/api/team', methods=['GET', 'POST'])
 def api_team():

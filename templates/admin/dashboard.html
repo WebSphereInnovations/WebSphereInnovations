@@ -225,6 +225,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="#navigation" data-section="navigation">
+                        <i class="fas fa-eye"></i>Navigation Control
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#services" data-section="services">
                         <i class="fas fa-cogs"></i>Services
                     </a>
@@ -384,6 +389,56 @@
                 
                 <button type="button" class="btn btn-admin admin-save-btn" data-section="company">
                     <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </form>
+        </div>
+        
+        <!-- Navigation Visibility Section -->
+        <div id="navigation-section" class="content-section" style="display: none;">
+            <h3 class="section-title">Navigation Visibility Control</h3>
+            <form id="navigationForm">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5 class="mb-3">Show/Hide Navigation Tabs</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="services_visible" name="services_visible">
+                                    <label class="form-check-label" for="services_visible">
+                                        <i class="fas fa-cogs me-2"></i>Services Tab
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="team_visible" name="team_visible">
+                                    <label class="form-check-label" for="team_visible">
+                                        <i class="fas fa-users me-2"></i>Team Tab
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="careers_visible" name="careers_visible">
+                                    <label class="form-check-label" for="careers_visible">
+                                        <i class="fas fa-briefcase me-2"></i>Careers Tab
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Note:</strong> Unchecked tabs will be hidden from the main navigation menu. Users won't be able to access these pages directly.
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn btn-admin admin-save-btn" data-section="navigation">
+                    <i class="fas fa-save me-2"></i>Save Navigation Settings
                 </button>
             </form>
         </div>
@@ -696,6 +751,8 @@
                             loadTeamData();
                         } else if (sectionId === 'services') {
                             loadServicesData();
+                        } else if (sectionId === 'navigation') {
+                            loadNavigationData();
                         } else if (sectionId === 'jobs') {
                             loadJobsData();
                         } else if (sectionId === 'settings') {
@@ -712,6 +769,8 @@
                     
                     if (section === 'company') {
                         saveCompanyData();
+                    } else if (section === 'navigation') {
+                        saveNavigationData();
                     } else if (section === 'services') {
                         saveServicesData();
                     } else if (section === 'jobs') {
@@ -785,6 +844,52 @@
             })
             .catch(error => {
                 console.error('Error loading settings:', error);
+            });
+        }
+        
+        function loadNavigationData() {
+            // Load navigation visibility data
+            fetch('/api/navigation')
+            .then(response => response.json())
+            .then(navigation => {
+                document.getElementById('services_visible').checked = navigation.services_visible || true;
+                document.getElementById('team_visible').checked = navigation.team_visible || true;
+                document.getElementById('careers_visible').checked = navigation.careers_visible || true;
+            })
+            .catch(error => {
+                console.error('Error loading navigation data:', error);
+                // Set default values
+                document.getElementById('services_visible').checked = true;
+                document.getElementById('team_visible').checked = true;
+                document.getElementById('careers_visible').checked = true;
+            });
+        }
+        
+        function saveNavigationData() {
+            const navigationData = {
+                services_visible: document.getElementById('services_visible').checked,
+                team_visible: document.getElementById('team_visible').checked,
+                careers_visible: document.getElementById('careers_visible').checked
+            };
+            
+            fetch('/api/navigation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(navigationData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('Navigation visibility settings saved successfully!', 'success');
+                } else {
+                    showAlert('Error saving navigation settings', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving navigation data:', error);
+                showAlert('Error saving navigation settings', 'error');
             });
         }
         
