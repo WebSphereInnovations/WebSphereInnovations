@@ -78,7 +78,7 @@
                         <p><i class="fas fa-phone me-2"></i> {{ company_info.phone }}</p>
                         <p><i class="fas fa-envelope me-2"></i> {{ company_info.email }}</p>
                         <p><i class="fab fa-whatsapp me-2"></i> {{ company_info.whatsapp }}{% if company_info.additional_whatsapp %}, {{ company_info.additional_whatsapp }}{% endif %}, +91 9168402327</p>
-                        {% if company_info.address %}
+                        {% if company_info.address and company_info.address != 'Your Address Here' %}
                         <p><i class="fas fa-map-marker-alt me-2"></i> {{ company_info.address }}</p>
                         {% endif %}
                     </div>

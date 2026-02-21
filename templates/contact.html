@@ -50,6 +50,7 @@
                         </div>
                     </div>
                     
+                    {% if company_info.address and company_info.address != 'Your Address Here' %}
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
                         <div class="contact-details">
@@ -57,6 +58,7 @@
                             <p>{{ company_info.address }}</p>
                         </div>
                     </div>
+                    {% endif %}
                     
                     <!-- Social Media Links -->
                     <div class="social-links">
@@ -133,12 +135,20 @@
             <div class="col-md-12">
                 <div class="map-container">
                     <!-- Placeholder for map -->
+                    {% if company_info.address and company_info.address != 'Your Address Here' %}
                     <div class="map-placeholder">
                         <i class="fas fa-map-marked-alt"></i>
                         <h4>Office Location</h4>
                         <p>{{ company_info.address }}</p>
                         <p><small>Interactive map will be displayed here</small></p>
                     </div>
+                    {% else %}
+                    <div class="map-placeholder">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h4>Office Location</h4>
+                        <p><small>Map will be displayed when address is added</small></p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

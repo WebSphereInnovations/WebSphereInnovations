@@ -2,15 +2,24 @@
     "positions": [
         {
             "id": "job_1",
-            "title": "Software Developer"
+            "title": "Software Developer",
+            "description": "We are looking for a skilled Software Developer to join our team. You will work on cutting-edge projects and develop innovative solutions.",
+            "experience": "2-3 years",
+            "posted_date": "2024-01-15"
         },
         {
             "id": "job_2",
-            "title": "Full Stack Developer"
+            "title": "Full Stack Developer",
+            "description": "Join our team as a Full Stack Developer and work on exciting projects. You will be responsible for end-to-end web application development.",
+            "experience": "3-5 years",
+            "posted_date": "2024-01-10"
         },
         {
             "id": "job_3",
-            "title": "Data Scientist"
+            "title": "Data Scientist",
+            "description": "We are seeking a talented Data Scientist to help us analyze complex data and build machine learning models.",
+            "experience": "2-4 years",
+            "posted_date": "2024-01-08"
         }
     ]
 }
