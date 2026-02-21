@@ -127,17 +127,23 @@ def inject_navigation():
         else:
             # Default navigation settings
             navigation = {
+                'home_visible': True,
                 'services_visible': True,
+                'projects_visible': True,
                 'team_visible': True,
-                'careers_visible': True
+                'careers_visible': True,
+                'contact_visible': True
             }
         return {'navigation': navigation}
     except:
         # Return default navigation if error occurs
         return {'navigation': {
+            'home_visible': True,
             'services_visible': True,
+            'projects_visible': True,
             'team_visible': True,
-            'careers_visible': True
+            'careers_visible': True,
+            'contact_visible': True
         }}
 
 @app.route('/')
@@ -236,6 +242,15 @@ def apply_job():
         if not all([job_id, name, email, phone, message]):
             return jsonify({'success': False, 'message': 'Please fill in all required fields'})
         
+        # Get job title from job_id
+        jobs_data = load_data('jobs')
+        job_title = job_id  # Default to job_id if not found
+        if 'positions' in jobs_data:
+            for position in jobs_data['positions']:
+                if position.get('id') == job_id:
+                    job_title = position.get('title', job_id)
+                    break
+        
         # Check if CV file is uploaded
         cv_file = request.files.get('cv')
         if not cv_file or cv_file.filename == '':
@@ -249,6 +264,11 @@ def apply_job():
         cv_handler = get_cv_handler()
         cv_info = cv_handler.save_cv_file(cv_file, name)
         
+        # Create CV download link
+        cv_download_link = None
+        if cv_info['success']:
+            cv_download_link = cv_handler.create_cv_download_link(cv_info['file_path'])
+        
         # Use WhatsApp service to send notification
         try:
             # Use user WhatsApp service for direct link generation
@@ -257,10 +277,11 @@ def apply_job():
             
             # Generate user WhatsApp link for job application
             result = whatsapp_service.send_job_application_notification(
-                job_id, name, email, phone, message, 
+                job_title, name, email, phone, message, 
                 cv_info.get('filename', ''), 
                 cv_info.get('file_path', ''), 
-                cv_info.get('file_size', 0)
+                cv_info.get('file_size', 0),
+                cv_download_link
             )
             
             if result['success']:
@@ -423,9 +444,12 @@ def get_navigation():
         else:
             # Default navigation settings
             navigation = {
+                'home_visible': True,
                 'services_visible': True,
+                'projects_visible': True,
                 'team_visible': True,
-                'careers_visible': True
+                'careers_visible': True,
+                'contact_visible': True
             }
             # Create default file
             os.makedirs('data', exist_ok=True)
@@ -448,9 +472,12 @@ def save_navigation():
         
         # Ensure all required fields exist
         navigation = {
+            'home_visible': navigation_data.get('home_visible', True),
             'services_visible': navigation_data.get('services_visible', True),
+            'projects_visible': navigation_data.get('projects_visible', True),
             'team_visible': navigation_data.get('team_visible', True),
-            'careers_visible': navigation_data.get('careers_visible', True)
+            'careers_visible': navigation_data.get('careers_visible', True),
+            'contact_visible': navigation_data.get('contact_visible', True)
         }
         
         # Save to file

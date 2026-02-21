@@ -1,5 +1,8 @@
 {
+    "home_visible": true,
     "services_visible": true,
-    "team_visible": false,
-    "careers_visible": true
+    "projects_visible": true,
+    "team_visible": true,
+    "careers_visible": true,
+    "contact_visible": true
 }

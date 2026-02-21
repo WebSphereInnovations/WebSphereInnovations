@@ -402,7 +402,16 @@
                         <h5 class="mb-3">Show/Hide Navigation Tabs</h5>
                         
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="home_visible" name="home_visible">
+                                    <label class="form-check-label" for="home_visible">
+                                        <i class="fas fa-home me-2"></i>Home Tab
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
                                 <div class="form-check form-switch mb-3">
                                     <input class="form-check-input" type="checkbox" id="services_visible" name="services_visible">
                                     <label class="form-check-label" for="services_visible">
@@ -411,7 +420,27 @@
                                 </div>
                             </div>
                             
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="projects_visible" name="projects_visible">
+                                    <label class="form-check-label" for="projects_visible">
+                                        <i class="fas fa-project-diagram me-2"></i>Projects Tab
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="careers_visible" name="careers_visible">
+                                    <label class="form-check-label" for="careers_visible">
+                                        <i class="fas fa-briefcase me-2"></i>Careers Tab
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-3">
                                 <div class="form-check form-switch mb-3">
                                     <input class="form-check-input" type="checkbox" id="team_visible" name="team_visible">
                                     <label class="form-check-label" for="team_visible">
@@ -420,11 +449,11 @@
                                 </div>
                             </div>
                             
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="careers_visible" name="careers_visible">
-                                    <label class="form-check-label" for="careers_visible">
-                                        <i class="fas fa-briefcase me-2"></i>Careers Tab
+                                    <input class="form-check-input" type="checkbox" id="contact_visible" name="contact_visible">
+                                    <label class="form-check-label" for="contact_visible">
+                                        <i class="fas fa-envelope me-2"></i>Contact Tab
                                     </label>
                                 </div>
                             </div>
@@ -852,24 +881,33 @@
             fetch('/api/navigation')
             .then(response => response.json())
             .then(navigation => {
+                document.getElementById('home_visible').checked = navigation.home_visible || true;
                 document.getElementById('services_visible').checked = navigation.services_visible || true;
+                document.getElementById('projects_visible').checked = navigation.projects_visible || true;
                 document.getElementById('team_visible').checked = navigation.team_visible || true;
                 document.getElementById('careers_visible').checked = navigation.careers_visible || true;
+                document.getElementById('contact_visible').checked = navigation.contact_visible || true;
             })
             .catch(error => {
                 console.error('Error loading navigation data:', error);
                 // Set default values
+                document.getElementById('home_visible').checked = true;
                 document.getElementById('services_visible').checked = true;
+                document.getElementById('projects_visible').checked = true;
                 document.getElementById('team_visible').checked = true;
                 document.getElementById('careers_visible').checked = true;
+                document.getElementById('contact_visible').checked = true;
             });
         }
         
         function saveNavigationData() {
             const navigationData = {
+                home_visible: document.getElementById('home_visible').checked,
                 services_visible: document.getElementById('services_visible').checked,
+                projects_visible: document.getElementById('projects_visible').checked,
                 team_visible: document.getElementById('team_visible').checked,
-                careers_visible: document.getElementById('careers_visible').checked
+                careers_visible: document.getElementById('careers_visible').checked,
+                contact_visible: document.getElementById('contact_visible').checked
             };
             
             fetch('/api/navigation', {

@@ -37,13 +37,13 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                            <a class="nav-link" href="{{ url_for('home') }}" {% if not navigation.home_visible %}style="display: none;"{% endif %}>Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('services') }}" {% if not navigation.services_visible %}style="display: none;"{% endif %}>Services</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('projects') }}">Projects</a>
+                            <a class="nav-link" href="{{ url_for('projects') }}" {% if not navigation.projects_visible %}style="display: none;"{% endif %}>Projects</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('team') }}" {% if not navigation.team_visible %}style="display: none;"{% endif %}>Team</a>
@@ -52,7 +52,7 @@
                             <a class="nav-link" href="{{ url_for('jobs') }}" {% if not navigation.careers_visible %}style="display: none;"{% endif %}>Careers</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
+                            <a class="nav-link" href="{{ url_for('contact') }}" {% if not navigation.contact_visible %}style="display: none;"{% endif %}>Contact</a>
                         </li>
                     </ul>
                 </div>
