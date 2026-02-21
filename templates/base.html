@@ -22,7 +22,9 @@
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
-                    <img src="{{ url_for('static', filename='images/websphere-logo.png') }}" alt="WebSphere Innovations" class="navbar-logo me-2">
+                    {% if logo.logo_enabled and logo.logo_exists %}
+                    <img src="{{ url_for('static', filename='images/websphere-logo.png') }}" alt="{{ logo.alt_text }}" class="navbar-logo me-2">
+                    {% endif %}
                     <span class="fw-bold">WebSphere Innovations</span>
                 </a>
                 

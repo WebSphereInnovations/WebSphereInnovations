@@ -225,6 +225,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="#logo" data-section="logo">
+                        <i class="fas fa-image"></i>Logo Management
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#navigation" data-section="navigation">
                         <i class="fas fa-eye"></i>Navigation Control
                     </a>
@@ -389,6 +394,70 @@
                 
                 <button type="button" class="btn btn-admin admin-save-btn" data-section="company">
                     <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </form>
+        </div>
+        
+        <!-- Logo Management Section -->
+        <div id="logo-section" class="content-section" style="display: none;">
+            <h3 class="section-title">Logo Management</h3>
+            <form id="logoForm">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5 class="mb-3">Company Logo</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="logo_enabled" class="form-label">Show Logo</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="logo_enabled" name="logo_enabled">
+                                        <label class="form-check-label" for="logo_enabled">
+                                            Enable logo display on website
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="logo_file" class="form-label">Upload New Logo</label>
+                                    <input type="file" class="form-control" id="logo_file" name="logo_file" accept=".png,.jpg,.jpeg">
+                                    <small class="text-muted">Accepted formats: PNG, JPG, JPEG (Max size: 5MB)</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="logo_alt_text" class="form-label">Alt Text</label>
+                                    <input type="text" class="form-control" id="logo_alt_text" name="logo_alt_text" placeholder="WebSphere Innovations Logo">
+                                    <small class="text-muted">Text displayed if image fails to load</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <h6>Current Logo Preview</h6>
+                                    <div class="logo-preview p-3 border rounded text-center" style="background: var(--darker-bg); min-height: 100px;">
+                                        <img id="logo_preview" src="{{ url_for('static', filename='images/websphere-logo.png') }}" alt="Logo Preview" style="max-height: 60px; max-width: 200px;">
+                                        <p class="mt-2 mb-0 small text-muted">Current logo preview</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteLogo()">
+                                        <i class="fas fa-trash me-1"></i>Delete Current Logo
+                                    </button>
+                                    <small class="text-muted d-block">This will remove the logo and show text-only branding</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Note:</strong> Logo changes will appear immediately on all pages. Recommended logo size: 200x40 pixels (width x height).
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn btn-admin admin-save-btn" data-section="logo">
+                    <i class="fas fa-save me-2"></i>Save Logo Settings
                 </button>
             </form>
         </div>
@@ -780,6 +849,8 @@
                             loadTeamData();
                         } else if (sectionId === 'services') {
                             loadServicesData();
+                        } else if (sectionId === 'logo') {
+                            loadLogoData();
                         } else if (sectionId === 'navigation') {
                             loadNavigationData();
                         } else if (sectionId === 'jobs') {
@@ -798,6 +869,8 @@
                     
                     if (section === 'company') {
                         saveCompanyData();
+                    } else if (section === 'logo') {
+                        saveLogoData();
                     } else if (section === 'navigation') {
                         saveNavigationData();
                     } else if (section === 'services') {
@@ -874,6 +947,111 @@
             .catch(error => {
                 console.error('Error loading settings:', error);
             });
+        }
+        
+        function loadLogoData() {
+            // Load logo data
+            fetch('/api/logo')
+            .then(response => response.json())
+            .then(logo => {
+                document.getElementById('logo_enabled').checked = logo.logo_enabled || false;
+                document.getElementById('logo_alt_text').value = logo.alt_text || 'WebSphere Innovations Logo';
+                
+                // Update logo preview
+                if (logo.logo_enabled && logo.logo_exists) {
+                    document.getElementById('logo_preview').style.display = 'block';
+                } else {
+                    document.getElementById('logo_preview').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading logo data:', error);
+                // Set default values
+                document.getElementById('logo_enabled').checked = false;
+                document.getElementById('logo_alt_text').value = 'WebSphere Innovations Logo';
+                document.getElementById('logo_preview').style.display = 'none';
+            });
+        }
+        
+        function saveLogoData() {
+            const logoData = {
+                logo_enabled: document.getElementById('logo_enabled').checked,
+                alt_text: document.getElementById('logo_alt_text').value
+            };
+            
+            // Handle file upload
+            const logoFile = document.getElementById('logo_file').files[0];
+            if (logoFile) {
+                const formData = new FormData();
+                formData.append('logo_file', logoFile);
+                formData.append('logo_data', JSON.stringify(logoData));
+                
+                fetch('/api/logo', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('Logo settings saved successfully!', 'success');
+                        // Refresh logo preview
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        showAlert('Error saving logo settings', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving logo data:', error);
+                    showAlert('Error saving logo settings', 'error');
+                });
+            } else {
+                // Save only settings without file
+                fetch('/api/logo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(logoData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('Logo settings saved successfully!', 'success');
+                    } else {
+                        showAlert('Error saving logo settings', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving logo data:', error);
+                    showAlert('Error saving logo settings', 'error');
+                });
+            }
+        }
+        
+        function deleteLogo() {
+            if (confirm('Are you sure you want to delete the current logo? This will remove the logo and show text-only branding.')) {
+                fetch('/api/logo/delete', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('Logo deleted successfully!', 'success');
+                        // Refresh logo preview
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        showAlert('Error deleting logo', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting logo:', error);
+                    showAlert('Error deleting logo', 'error');
+                });
+            }
         }
         
         function loadNavigationData() {

@@ -146,6 +146,30 @@ def inject_navigation():
             'contact_visible': True
         }}
 
+@app.context_processor
+def inject_logo():
+    """Inject logo settings into all templates"""
+    try:
+        logo_file = 'data/logo.json'
+        if os.path.exists(logo_file):
+            with open(logo_file, 'r') as f:
+                logo = json.load(f)
+        else:
+            # Default logo settings
+            logo = {
+                'logo_enabled': False,
+                'alt_text': 'WebSphere Innovations Logo',
+                'logo_exists': os.path.exists('static/images/websphere-logo.png')
+            }
+        return {'logo': logo}
+    except:
+        # Return default logo if error occurs
+        return {'logo': {
+            'logo_enabled': False,
+            'alt_text': 'WebSphere Innovations Logo',
+            'logo_exists': os.path.exists('static/images/websphere-logo.png')
+        }}
+
 @app.route('/')
 def home():
     company_info = load_data('company_info')
@@ -432,6 +456,92 @@ def api_projects():
         return jsonify({'success': True})
     
     return jsonify(load_data('projects'))
+
+@app.route('/api/logo', methods=['GET'])
+def get_logo():
+    """Get logo settings"""
+    try:
+        logo_file = 'data/logo.json'
+        if os.path.exists(logo_file):
+            with open(logo_file, 'r') as f:
+                logo = json.load(f)
+        else:
+            # Default logo settings
+            logo = {
+                'logo_enabled': False,
+                'alt_text': 'WebSphere Innovations Logo',
+                'logo_exists': os.path.exists('static/images/websphere-logo.png')
+            }
+            # Create default file
+            os.makedirs('data', exist_ok=True)
+            with open(logo_file, 'w') as f:
+                json.dump(logo, f, indent=4)
+        
+        return jsonify(logo)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/logo', methods=['POST'])
+def save_logo():
+    """Save logo settings"""
+    try:
+        # Handle file upload
+        logo_file = request.files.get('logo_file')
+        logo_data = {}
+        
+        if logo_file:
+            # Save uploaded logo
+            logo_filename = secure_filename(logo_file.filename)
+            logo_path = os.path.join('static/images', 'websphere-logo.png')
+            logo_file.save(logo_path)
+            logo_data['logo_exists'] = True
+        else:
+            # Get logo data from form
+            logo_data_json = request.form.get('logo_data')
+            if logo_data_json:
+                logo_data = json.loads(logo_data_json)
+            logo_data['logo_exists'] = os.path.exists('static/images/websphere-logo.png')
+        
+        # Update logo settings
+        final_logo_data = {
+            'logo_enabled': logo_data.get('logo_enabled', False),
+            'alt_text': logo_data.get('alt_text', 'WebSphere Innovations Logo'),
+            'logo_exists': logo_data.get('logo_exists', False)
+        }
+        
+        # Save to file
+        os.makedirs('data', exist_ok=True)
+        with open('data/logo.json', 'w') as f:
+            json.dump(final_logo_data, f, indent=4)
+        
+        return jsonify({'success': True, 'message': 'Logo settings saved successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/logo/delete', methods=['POST'])
+def delete_logo():
+    """Delete logo"""
+    try:
+        # Remove logo file
+        logo_path = 'static/images/websphere-logo.png'
+        if os.path.exists(logo_path):
+            os.remove(logo_path)
+        
+        # Update logo settings
+        logo_data = {
+            'logo_enabled': False,
+            'alt_text': 'WebSphere Innovations Logo',
+            'logo_exists': False
+        }
+        
+        # Save to file
+        os.makedirs('data', exist_ok=True)
+        with open('data/logo.json', 'w') as f:
+            json.dump(logo_data, f, indent=4)
+        
+        return jsonify({'success': True, 'message': 'Logo deleted successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/api/navigation', methods=['GET'])
 def get_navigation():
